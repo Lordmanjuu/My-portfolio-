@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Thoti Manjunath — OSINT, Cybersecurity & Web Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet"/>
+<style>
+
+/* ══════════════════════════════════════
+   RESET & VARIABLES
+══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --white:    #ffffff;
+  --offwhite: #f8f7f4;
+  --gray50:   #f9fafb;
+  --gray100:  #f3f4f6;
+  --gray200:  #e5e7eb;
+  --gray300:  #d1d5db;
+  --gray400:  #9ca3af;
+  --gray500:  #6b7280;
+  --gray700:  #374151;
+  --gray900:  #111827;
+  --navy:     #0c1e4a;
+  --blue:     #1d4ed8;
+  --blue2:    #2563eb;
+  --blue3:    #3b82f6;
+  --blue-bg:  #eff6ff;
+  --blue-bd:  #bfdbfe;
+  --teal:     #0f766e;
+  --teal-bg:  #f0fdfa;
+  --teal-bd:  #99f6e4;
+  --violet:   #6d28d9;
+  --vio-bg:   #f5f3ff;
+  --vio-bd:   #ddd6fe;
+  --green:    #166534;
+  --green-bg: #f0fdf4;
+  --green-bd: #bbf7d0;
+  --amber-bg: #fffbeb;
+  --amber-bd: #fde68a;
+  --red:      #dc2626;
+  --border:   #e5e7eb;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow:   0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 40px rgba(0,0,0,.10);
+  --shadow-xl:0 20px 60px rgba(0,0,0,.12);
+  --r:        10px;
+  --font:     'Plus Jakarta Sans', sans-serif;
+  --serif:    'Playfair Display', serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--offwhite);
+  color: var(--gray900);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--gray100); }
+::-webkit-scrollbar-thumb { background: var(--blue3); border-radius: 4px; }
+
+/* ══════════════════════════════════════
+   ANIMATIONS  (always visible fallback)
+══════════════════════════════════════ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.show { opacity: 1; transform: translateY(0); }
+
+/* stagger delays */
+.d1{transition-delay:.05s} .d2{transition-delay:.12s} .d3{transition-delay:.19s}
+.d4{transition-delay:.26s} .d5{transition-delay:.33s} .d6{transition-delay:.40s}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  height: 64px; padding: 0 6%;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(248,247,244,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow .3s;
+}
+#navbar.stuck { box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+.n-logo { font-weight: 800; font-size: 1rem; color: var(--gray900); text-decoration: none; letter-spacing: -.01em; }
+.n-logo span { color: var(--blue); }
+.n-menu { display: flex; gap: 1.8rem; list-style: none; }
+.n-menu a { font-size: .8rem; font-weight: 500; color: var(--gray500); text-decoration: none; transition: color .2s; letter-spacing: .01em; }
+.n-menu a:hover, .n-menu a.on { color: var(--gray900); }
+.n-btn {
+  background: var(--gray900); color: #fff;
+  font-size: .78rem; font-weight: 700;
+  padding: .5rem 1.3rem; border-radius: 7px;
+  text-decoration: none; letter-spacing: .01em;
+  transition: background .25s, transform .2s;
+}
+.n-btn:hover { background: var(--blue); transform: translateY(-1px); }
+
+/* ══════════════════════════════════════
+   SHARED LAYOUT
+══════════════════════════════════════ */
+.section { padding: 6rem 6%; }
+.section.alt { background: var(--white); }
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+.label {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .68rem; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: .75rem;
+}
+.label-num { color: var(--gray400); font-weight: 500; }
+
+.heading {
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 3.5vw, 2.7rem);
+  color: var(--gray900); line-height: 1.1;
+  letter-spacing: -.02em; margin-bottom: 2.5rem;
+}
+.heading em { font-style: italic; color: var(--blue); }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  padding-top: 64px;
+  display: flex; align-items: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+
+/* grid lines */
+#hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--gray200) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gray200) 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity: .4;
+}
+/* blue glow blob */
+#hero::after {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(29,78,216,.05), transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 390px;
+  gap: 5rem; align-items: center;
+}
+
+/* Live badge */
+.h-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--blue-bg); border: 1px solid var(--blue-bd);
+  color: var(--blue); font-size: .7rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: .32rem .95rem; border-radius: 100px; margin-bottom: 1.6rem;
+}
+.pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--blue3);
+  animation: pulseAnim 2s infinite;
+}
+@keyframes pulseAnim {
+  0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(59,130,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+
+.h-name {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 6.5vw, 5rem);
+  line-height: 1.03; color: var(--gray900);
+  letter-spacing: -.025em; margin-bottom: .5rem;
+}
+.h-name em { font-style: italic; color: var(--blue); display: block; }
+
+.h-role {
+  font-size: .92rem; font-weight: 600; color: var(--gray500);
+  letter-spacing: .02em; margin-bottom: 1.5rem; min-height: 1.5em;
+}
+#typed-text { color: var(--gray900); }
+.caret { color: var(--blue); animation: caretBlink .75s infinite; }
+@keyframes caretBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.h-desc {
+  font-size: 1.02rem; color: var(--gray500); line-height: 1.9;
+  max-width: 480px; margin-bottom: 2rem;
+}
+.h-desc strong { color: var(--gray900); font-weight: 700; }
+
+.h-pills { display: flex; gap: .45rem; flex-wrap: wrap; margin-bottom: 2.2rem; }
+.pill {
+  font-size: .7rem; font-weight: 600; padding: .28rem .8rem;
+  border-radius: 100px; border: 1px solid var(--border);
+  color: var(--gray500); background: var(--offwhite); letter-spacing: .02em;
+}
+.pill.p-blue { background: var(--blue-bg); border-color: var(--blue-bd); color: var(--blue); }
+.pill.p-teal { background: var(--teal-bg); border-color: var(--teal-bd); color: var(--teal); }
+.pill.p-vio  { background: var(--vio-bg);  border-color: var(--vio-bd);  color: var(--violet); }
+
+.h-actions { display: flex; gap: .8rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.btn-solid {
+  background: var(--gray900); color: #fff;
+  font-size: .83rem; font-weight: 700; padding: .72rem 1.7rem;
+  border-radius: 8px; text-decoration: none; letter-spacing: .01em;
+  transition: background .25s, transform .2s, box-shadow .25s;
+  display: inline-flex; align-items: center; gap: .45rem;
+}
+.btn-solid:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29,78,216,.22); }
+.btn-outline {
+  background: transparent; color: var(--gray700);
+  font-size: .83rem; font-weight: 700; padding: .72rem 1.7rem;
+  border-radius: 8px; text-decoration: none; letter-spacing: .01em;
+  border: 1.5px solid var(--gray300);
+  transition: border-color .25s, color .25s, transform .2s;
+  display: inline-flex; align-items: center; gap: .45rem;
+}
+.btn-outline:hover { border-color: var(--blue3); color: var(--blue); transform: translateY(-2px); }
+
+.h-stats {
+  display: flex; gap: 2.5rem;
+  border-top: 1px solid var(--border); padding-top: 2rem;
+}
+.stat-num {
+  font-family: var(--serif); font-size: 2.3rem; color: var(--gray900);
+  line-height: 1; display: block; letter-spacing: -.03em; margin-bottom: .2rem;
+}
+.stat-lbl { font-size: .72rem; font-weight: 500; color: var(--gray500); }
+
+/* hero card */
+.h-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); box-shadow: var(--shadow-xl); overflow: hidden;
+}
+.hc-head {
+  background: var(--navy); padding: 2rem;
+  position: relative; overflow: hidden;
+}
+.hc-head::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.hc-head::after {
+  content: '';
+  position: absolute; bottom: -40px; left: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.025);
+}
+.hc-tag {
+  font-size: .65rem; font-weight: 700; letter-spacing: .15em;
+  text-transform: uppercase; color: #93c5fd;
+  display: block; margin-bottom: .7rem; position: relative; z-index: 1;
+}
+.hc-rank {
+  font-family: var(--serif); font-size: 5rem; color: #fff;
+  line-height: 1; letter-spacing: -.03em;
+  display: block; position: relative; z-index: 1;
+}
+.hc-sub { font-size: .77rem; color: #94a3b8; margin-top: .4rem; line-height: 1.5; position: relative; z-index: 1; }
+.hc-body { padding: 0 1.8rem 1.5rem; }
+.hc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .65rem 0; border-bottom: 1px solid var(--border);
+  font-size: .8rem;
+}
+.hc-row:last-child { border-bottom: none; }
+.hc-k { color: var(--gray500); font-weight: 500; }
+.hc-v { color: var(--gray900); font-weight: 700; }
+.hc-v.cl-blue { color: var(--blue); }
+.hc-v.cl-teal { color: var(--teal); display: flex; align-items: center; gap: .4rem; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); animation: pulseAnim 2s infinite; }
+
+/* ══════════════════════════════════════
+   ABOUT
+══════════════════════════════════════ */
+#about { background: var(--offwhite); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.about-text p { font-size: 1rem; color: var(--gray500); line-height: 1.9; margin-bottom: 1.1rem; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1.8rem; }
+.info-chip {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; padding: .75rem 1rem;
+}
+.ic-k { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gray400); display: block; margin-bottom: .15rem; }
+.ic-v { font-size: .84rem; font-weight: 600; color: var(--gray900); }
+
+.edu-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 2rem; box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.edu-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+}
+.edu-ico {
+  width: 46px; height: 46px; border-radius: 10px;
+  background: var(--blue-bg); border: 1px solid var(--blue-bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; margin-bottom: 1.1rem;
+}
+.edu-deg { font-family: var(--serif); font-size: 1.25rem; color: var(--gray900); line-height: 1.3; margin-bottom: .3rem; }
+.edu-uni { font-size: .8rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem; }
+.edu-desc { font-size: .88rem; color: var(--gray500); line-height: 1.75; margin-bottom: 1.2rem; }
+.badge-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  background: var(--green-bg); border: 1px solid var(--green-bd);
+  color: var(--green); font-size: .7rem; font-weight: 700;
+  padding: .22rem .7rem; border-radius: 100px;
+}
+
+/* ══════════════════════════════════════
+   SERVICES
+══════════════════════════════════════ */
+#services { background: var(--white); }
+.svc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; }
+.svc-card {
+  background: var(--offwhite); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 2rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  position: relative; overflow: hidden;
+  transition: box-shadow .3s, transform .3s, border-color .3s;
+}
+.svc-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: var(--gray300); }
+.svc-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.svc-card:hover::before { transform: scaleX(1); }
+.svc-card.s1::before { background: linear-gradient(90deg, var(--blue), var(--blue3)); }
+.svc-card.s2::before { background: linear-gradient(90deg, var(--teal), #34d399); }
+.svc-card.s3::before { background: linear-gradient(90deg, var(--violet), #a78bfa); }
+.svc-ico {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.svc-ico.i-blue   { background: var(--blue-bg); border: 1px solid var(--blue-bd); }
+.svc-ico.i-teal   { background: var(--teal-bg); border: 1px solid var(--teal-bd); }
+.svc-ico.i-violet { background: var(--vio-bg);  border: 1px solid var(--vio-bd); }
+.svc-num { font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gray400); }
+.svc-name { font-family: var(--serif); font-size: 1.28rem; color: var(--gray900); line-height: 1.2; }
+.svc-desc { font-size: .88rem; color: var(--gray500); line-height: 1.78; flex: 1; }
+.svc-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.svc-list li { display: flex; align-items: center; gap: .6rem; font-size: .82rem; font-weight: 600; color: var(--gray700); }
+.svc-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.s1 .svc-list li::before { background: var(--blue3); }
+.s2 .svc-list li::before { background: var(--teal); }
+.s3 .svc-list li::before { background: var(--violet); }
+
+/* ══════════════════════════════════════
+   SKILLS
+══════════════════════════════════════ */
+#skills { background: var(--offwhite); }
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+.sk-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.7rem;
+  transition: box-shadow .3s, transform .3s;
+}
+.sk-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.sk-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1.1rem; }
+.sk-ico {
+  width: 40px; height: 40px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; flex-shrink: 0;
+}
+.sk-ico.i-blue   { background: var(--blue-bg);  border: 1px solid var(--blue-bd); }
+.sk-ico.i-teal   { background: var(--teal-bg);  border: 1px solid var(--teal-bd); }
+.sk-ico.i-violet { background: var(--vio-bg);   border: 1px solid var(--vio-bd); }
+.sk-ico.i-amber  { background: var(--amber-bg); border: 1px solid var(--amber-bd); }
+.sk-ico.i-green  { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.sk-name { font-size: .9rem; font-weight: 700; color: var(--gray900); }
+.sk-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.sk-tag {
+  background: var(--offwhite); border: 1px solid var(--border);
+  color: var(--gray500); font-size: .7rem; font-weight: 500;
+  padding: .22rem .6rem; border-radius: 6px;
+  transition: color .2s, border-color .2s;
+}
+.sk-card:hover .sk-tag { color: var(--gray700); border-color: var(--gray300); }
+.sk-full { grid-column: 1 / -1; }
+
+/* ══════════════════════════════════════
+   EXPERIENCE
+══════════════════════════════════════ */
+#experience { background: var(--white); }
+.exp-item {
+  display: grid; grid-template-columns: 170px 1fr;
+  gap: 3rem; padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+}
+.exp-item:last-child { border-bottom: 1px solid var(--border); }
+.exp-when { font-size: .8rem; font-weight: 600; color: var(--gray500); line-height: 1.6; }
+.exp-now-tag {
+  display: inline-block; margin-top: .55rem;
+  background: var(--blue-bg); border: 1px solid var(--blue-bd);
+  color: var(--blue); font-size: .63rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: .18rem .6rem; border-radius: 100px;
+}
+.exp-org { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: .35rem; }
+.exp-title { font-family: var(--serif); font-size: 1.45rem; color: var(--gray900); line-height: 1.2; margin-bottom: 1.1rem; }
+.exp-title small { font-family: var(--font); font-size: .83rem; font-weight: 400; color: var(--gray500); }
+.exp-points { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.exp-points li {
+  font-size: .9rem; color: var(--gray500); line-height: 1.75;
+  display: flex; gap: .7rem; align-items: flex-start;
+}
+.exp-points li::before {
+  content: ''; flex-shrink: 0; margin-top: .65rem;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--blue3);
+}
+
+/* ══════════════════════════════════════
+   PROJECTS
+══════════════════════════════════════ */
+#projects { background: var(--offwhite); }
+.filter-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2.2rem; }
+.f-btn {
+  font-family: var(--font); font-size: .77rem; font-weight: 600;
+  padding: .42rem 1.05rem; border-radius: 100px;
+  border: 1.5px solid var(--border); color: var(--gray500);
+  background: var(--white); cursor: pointer;
+  transition: all .22s;
+}
+.f-btn:hover, .f-btn.active { background: var(--gray900); color: #fff; border-color: var(--gray900); }
+.proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+.proj-grid.hidden { display: none; }
+.p-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.9rem;
+  display: flex; flex-direction: column; gap: .85rem;
+  position: relative; overflow: hidden;
+  transition: box-shadow .3s, transform .3s;
+}
+.p-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .38s cubic-bezier(.22,1,.36,1);
+}
+.p-card.pc-sec::after { background: linear-gradient(90deg, var(--blue), var(--blue3)); }
+.p-card.pc-web::after { background: linear-gradient(90deg, var(--violet), var(--blue3)); }
+.p-card.pc-food::after { background: linear-gradient(90deg, #f97316, #fbbf24); }
+.p-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+.p-card:hover::after { transform: scaleX(1); }
+.p-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: .2rem .65rem; border-radius: 100px;
+}
+.pb-sec  { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-bd); }
+.pb-web  { background: var(--vio-bg);  color: var(--violet); border: 1px solid var(--vio-bd); }
+.pb-food { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+.p-num   { font-size: .67rem; font-weight: 700; letter-spacing: .12em; color: var(--gray400); text-transform: uppercase; }
+.p-name  { font-family: var(--serif); font-size: 1.18rem; color: var(--gray900); line-height: 1.3; }
+.p-stack { font-size: .73rem; font-weight: 600; color: var(--blue); }
+.p-stack.vs { color: var(--violet); }
+.p-stack.fs { color: #ea580c; }
+.p-desc  { font-size: .87rem; color: var(--gray500); line-height: 1.75; flex: 1; }
+.p-link  {
+  display: inline-flex; align-items: center; gap: .38rem;
+  font-size: .77rem; font-weight: 700; color: var(--gray700); text-decoration: none;
+  transition: color .2s, gap .2s;
+}
+.p-link:hover { color: var(--blue); gap: .6rem; }
+
+/* ══════════════════════════════════════
+   CTF
+══════════════════════════════════════ */
+#ctf { background: var(--white); }
+.ctf-top {
+  background: var(--navy); border-radius: var(--r);
+  padding: 2.8rem 3rem; margin-bottom: 1.2rem;
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 2rem;
+  position: relative; overflow: hidden;
+}
+.ctf-top::before {
+  content: ''; position: absolute;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(255,255,255,.025);
+  top: -100px; right: -80px;
+}
+.ctf-lbl { font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #93c5fd; margin-bottom: .7rem; }
+.ctf-title { font-family: var(--serif); font-size: 1.9rem; color: #fff; margin-bottom: .45rem; }
+.ctf-sub { font-size: .85rem; color: #94a3b8; }
+.ctf-rank {
+  font-family: var(--serif); font-size: 6rem; font-weight: 600;
+  color: #fff; line-height: 1; letter-spacing: -.04em; text-align: right;
+}
+.ctf-rank small { display: block; font-family: var(--font); font-size: .76rem; font-weight: 700; letter-spacing: .08em; color: #93c5fd; margin-top: .2rem; }
+.ctf-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+.ctf-card {
+  background: var(--offwhite); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.5rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  transition: box-shadow .3s, transform .3s;
+}
+.ctf-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.ctf-icon {
+  width: 42px; height: 42px; border-radius: 9px;
+  background: var(--white); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.ctf-res { font-size: .73rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .07em; display: block; margin-bottom: .18rem; }
+.ctf-ev { font-size: .9rem; font-weight: 700; color: var(--gray900); line-height: 1.35; margin-bottom: .15rem; }
+.ctf-org { font-size: .73rem; color: var(--gray500); }
+
+/* ══════════════════════════════════════
+   CERTS
+══════════════════════════════════════ */
+#certs { background: var(--offwhite); }
+.certs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.cert-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.5rem;
+  transition: box-shadow .3s, transform .3s;
+  position: relative; overflow: hidden;
+}
+.cert-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .35s;
+}
+.cert-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.cert-card:hover::after { transform: scaleX(1); }
+.cert-ico { font-size: 1.4rem; display: block; margin-bottom: .75rem; }
+.cert-name { font-size: .88rem; font-weight: 700; color: var(--gray900); line-height: 1.4; margin-bottom: .3rem; }
+.cert-by { font-size: .73rem; color: var(--gray500); font-weight: 500; }
+.cert-date { font-size: .7rem; color: var(--blue); font-weight: 700; margin-top: .25rem; }
+
+/* ══════════════════════════════════════
+   CONTACT
+══════════════════════════════════════ */
+#contact { background: var(--white); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+.ct-title { font-family: var(--serif); font-size: 2.2rem; color: var(--gray900); margin-bottom: .9rem; line-height: 1.15; }
+.ct-desc { font-size: .98rem; color: var(--gray500); line-height: 1.85; margin-bottom: 2rem; }
+.ct-links { display: flex; flex-direction: column; gap: .7rem; }
+.ct-link {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--offwhite); border: 1px solid var(--border);
+  border-radius: 9px; padding: .95rem 1.15rem;
+  text-decoration: none; transition: all .25s;
+}
+.ct-link:hover { border-color: var(--blue3); background: var(--blue-bg); transform: translateX(4px); }
+.ct-link:hover .ct-lv { color: var(--blue); }
+.ct-ico {
+  width: 38px; height: 38px; border-radius: 8px;
+  background: var(--white); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0;
+}
+.ct-lk { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gray400); display: block; }
+.ct-lv { font-size: .83rem; font-weight: 600; color: var(--gray900); transition: color .25s; }
+
+.opps-card {
+  background: var(--offwhite); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 2rem;
+}
+.opps-title { font-family: var(--serif); font-size: 1.4rem; color: var(--gray900); margin-bottom: .3rem; }
+.opps-sub { font-size: .78rem; color: var(--gray500); margin-bottom: 1.4rem; }
+.opps-list { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+.opps-list li {
+  display: flex; align-items: center; gap: .9rem;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; padding: .8rem .95rem;
+  font-size: .88rem; font-weight: 600; color: var(--gray700);
+  transition: border-color .2s;
+}
+.opps-list li:hover { border-color: var(--blue3); }
+.opps-list li span:first-child { font-size: 1rem; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: var(--gray900); color: #fff;
+  padding: 2.2rem 6%;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+.ft-copy { font-size: .78rem; color: #9ca3af; }
+.ft-copy strong { color: #fff; }
+.ft-links { display: flex; gap: 1.5rem; }
+.ft-links a { font-size: .78rem; color: #9ca3af; text-decoration: none; font-weight: 500; transition: color .2s; }
+.ft-links a:hover { color: #fff; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 980px) {
+  #navbar { padding: 0 4%; }
+  .n-menu { display: none; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .h-card { display: none; }
+  .about-grid, .contact-grid { grid-template-columns: 1fr; }
+  .svc-grid, .skills-grid { grid-template-columns: 1fr 1fr; }
+  .proj-grid { grid-template-columns: 1fr 1fr; }
+  .ctf-cards, .certs-grid { grid-template-columns: 1fr 1fr; }
+  .ctf-top { grid-template-columns: 1fr; }
+  .ctf-rank { text-align: left; font-size: 4rem; }
+  .exp-item { grid-template-columns: 1fr; gap: .6rem; }
+  .section { padding: 4.5rem 4%; }
+  .sk-full { grid-column: auto; }
+}
+@media (max-width: 600px) {
+  .svc-grid, .skills-grid, .proj-grid, .ctf-cards, .certs-grid { grid-template-columns: 1fr; }
+  .h-stats { flex-wrap: wrap; gap: 1.5rem; }
+  .info-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: flex-start; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav id="navbar">
+  <a href="#hero" class="n-logo">Thoti <span>Manjunath</span></a>
+  <ul class="n-menu">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#ctf">CTF</a></li>
+    <li><a href="#certs">Certs</a></li>
+  </ul>
+  <a href="#contact" class="n-btn">Hire Me →</a>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <div class="hero-inner wrap">
+
+    <div>
+      <div class="h-badge"><div class="pulse-dot"></div>Open to Opportunities</div>
+
+      <h1 class="h-name">
+        Thoti
+        <em>Manjunath</em>
+      </h1>
+
+      <p class="h-role"><span id="typed-text"></span><span class="caret">|</span></p>
+
+      <p class="h-desc">
+        Strategic OSINT Investigator, Cybersecurity Researcher, and Website Developer.
+        I help businesses <strong>stay secure</strong> and <strong>look professional online</strong>.
+        Ranked <strong>#9 globally</strong> on OSINT Industries.
+      </p>
+
+      <div class="h-pills">
+        <span class="pill p-blue">🔍 OSINT</span>
+        <span class="pill p-teal">🛡️ Cybersecurity</span>
+        <span class="pill p-vio">🌐 Web Development</span>
+        <span class="pill">🚩 CTF Competitor</span>
+        <span class="pill">🍽️ Food Sites</span>
+      </div>
+
+      <div class="h-actions">
+        <a href="#contact" class="btn-solid">Hire Me</a>
+        <a href="https://github.com/lordmanjuu" target="_blank" class="btn-outline">GitHub ↗</a>
+      </div>
+
+      <div class="h-stats">
+        <div><span class="stat-num">#9</span><span class="stat-lbl">Global OSINT Rank</span></div>
+        <div><span class="stat-num">6+</span><span class="stat-lbl">Certifications</span></div>
+        <div><span class="stat-num">4+</span><span class="stat-lbl">CTF Events</span></div>
+        <div><span class="stat-num">3+</span><span class="stat-lbl">Sites Delivered</span></div>
+      </div>
+    </div>
+
+    <div class="h-card">
+      <div class="hc-head">
+        <span class="hc-tag">// OSINT Industries Platform</span>
+        <span class="hc-rank">#9</span>
+        <p class="hc-sub">Global Rank · OSINT Specialist Tier · 250 Points</p>
+      </div>
+      <div class="hc-body">
+        <div class="hc-row"><span class="hc-k">Primary Role</span><span class="hc-v cl-blue">OSINT Track Lead</span></div>
+        <div class="hc-row"><span class="hc-k">Also Offers</span><span class="hc-v cl-blue">Web Development</span></div>
+        <div class="hc-row"><span class="hc-k">Organization</span><span class="hc-v">Secure With Techies</span></div>
+        <div class="hc-row"><span class="hc-k">Education</span><span class="hc-v">B.Tech CSE (AI & ML)</span></div>
+        <div class="hc-row"><span class="hc-k">GitHub</span><span class="hc-v cl-blue">@lordmanjuu</span></div>
+        <div class="hc-row"><span class="hc-k">Status</span><span class="hc-v cl-teal"><div class="live-dot"></div>Active & Available</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ ABOUT ════ -->
+<section id="about" class="section">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">01 —</span> Profile</div>
+    <div class="about-grid">
+      <div class="fade-up d1">
+        <h2 class="heading">Who I <em>Am</em></h2>
+        <p class="about-text">
+          <p style="font-size:1rem;color:var(--gray500);line-height:1.9;margin-bottom:1.1rem">I'm a B.Tech CSE (AI & ML) student from Punganur, Andhra Pradesh — a cybersecurity researcher, OSINT specialist, and professional website developer. I help businesses stay safe in the digital world and build a web presence that earns trust.</p>
+          <p style="font-size:1rem;color:var(--gray500);line-height:1.9;margin-bottom:1.1rem">As OSINT Track Lead at Secure With Techies, I architect training simulations and mentor the next generation of cybersecurity analysts. I've also delivered websites for businesses — from food & restaurant sites to full corporate platforms.</p>
+          <p style="font-size:1rem;color:var(--gray500);line-height:1.9;margin-bottom:1.1rem">I also contribute to rural digital literacy through Village Development Force NGO, promoting safe online practices in underserved communities.</p>
+        </p>
+        <div class="info-grid">
+          <div class="info-chip"><span class="ic-k">Location</span><span class="ic-v">Punganur, Andhra Pradesh</span></div>
+          <div class="info-chip"><span class="ic-k">Phone</span><span class="ic-v">+91 95730 38451</span></div>
+          <div class="info-chip"><span class="ic-k">Email</span><span class="ic-v" style="font-size:.78rem">thotimanjunath4513@gmail.com</span></div>
+          <div class="info-chip"><span class="ic-k">GitHub</span><span class="ic-v">@lordmanjuu</span></div>
+        </div>
+      </div>
+      <div class="fade-up d2">
+        <div class="edu-card">
+          <div class="edu-ico">🎓</div>
+          <div class="edu-deg">B.Tech in Computer Science Engineering</div>
+          <div class="edu-uni">JNTU Anantapur &nbsp;·&nbsp; 2025 – Present</div>
+          <p class="edu-desc">Specialization in Artificial Intelligence & Machine Learning with active focus on cybersecurity research. Regular participant in CTF competitions and security research communities.</p>
+          <div class="badge-tag">✓ AI & ML Specialization</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ SERVICES ════ -->
+<section id="services" class="section alt">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">02 —</span> What I Do</div>
+    <h2 class="heading fade-up">Services I <em>Offer</em></h2>
+    <div class="svc-grid">
+
+      <div class="svc-card s1 fade-up d1">
+        <div class="svc-ico i-blue">🔍</div>
+        <div class="svc-num">Service — 01</div>
+        <div class="svc-name">OSINT & Threat Intelligence</div>
+        <p class="svc-desc">Digital footprint analysis, open-source intelligence gathering, and threat profiling for individuals and organizations. I uncover what the internet knows — before someone else does.</p>
+        <ul class="svc-list">
+          <li>Digital Footprint Analysis</li>
+          <li>Social Media Intelligence (SOCMINT)</li>
+          <li>Shodan Network Reconnaissance</li>
+          <li>Threat Profile Reports</li>
+        </ul>
+      </div>
+
+      <div class="svc-card s2 fade-up d2">
+        <div class="svc-ico i-teal">🛡️</div>
+        <div class="svc-num">Service — 02</div>
+        <div class="svc-name">Cybersecurity Research</div>
+        <p class="svc-desc">Vulnerability assessments, breach analysis, and security automation tools. Helping businesses identify and patch security gaps before attackers find them.</p>
+        <ul class="svc-list">
+          <li>Email Breach & Exposure Analysis</li>
+          <li>Network Vulnerability Scanning</li>
+          <li>Security Automation Scripts</li>
+          <li>CTF-grade Forensic Analysis</li>
+        </ul>
+      </div>
+
+      <div class="svc-card s3 fade-up d3">
+        <div class="svc-ico i-violet">🌐</div>
+        <div class="svc-num">Service — 03</div>
+        <div class="svc-name">Website Development</div>
+        <p class="svc-desc">Clean, fast, professional websites built for real businesses — from corporate platforms to food & restaurant pages that attract customers and build credibility.</p>
+        <ul class="svc-list">
+          <li>Business & Corporate Websites</li>
+          <li>Landing Pages & Lead Capture</li>
+          <li>Food & Restaurant Websites</li>
+          <li>Mobile-First Responsive Design</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ SKILLS ════ -->
+<section id="skills" class="section">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">03 —</span> Capabilities</div>
+    <h2 class="heading fade-up">Skills & <em>Expertise</em></h2>
+    <div class="skills-grid">
+      <div class="sk-card fade-up d1">
+        <div class="sk-head"><div class="sk-ico i-blue">🔍</div><div class="sk-name">OSINT & Intelligence</div></div>
+        <div class="sk-tags">
+          <span class="sk-tag">OSINT Investigation</span><span class="sk-tag">SOCMINT</span>
+          <span class="sk-tag">Shodan & Network Intel</span><span class="sk-tag">Digital Footprint Analysis</span>
+          <span class="sk-tag">Threat Intelligence</span><span class="sk-tag">Google Dorking</span>
+        </div>
+      </div>
+      <div class="sk-card fade-up d2">
+        <div class="sk-head"><div class="sk-ico i-teal">🛡️</div><div class="sk-name">Cybersecurity</div></div>
+        <div class="sk-tags">
+          <span class="sk-tag">Cyber Forensics</span><span class="sk-tag">CTF Strategy</span>
+          <span class="sk-tag">Web App Security</span><span class="sk-tag">Vulnerability Scanning</span>
+          <span class="sk-tag">Breach Analysis</span>
+        </div>
+      </div>
+      <div class="sk-card fade-up d3">
+        <div class="sk-head"><div class="sk-ico i-violet">🌐</div><div class="sk-name">Web Development</div></div>
+        <div class="sk-tags">
+          <span class="sk-tag">HTML5 & CSS3</span><span class="sk-tag">JavaScript</span>
+          <span class="sk-tag">Responsive Design</span><span class="sk-tag">Landing Pages</span>
+          <span class="sk-tag">Corporate Websites</span><span class="sk-tag">Food & Restaurant Sites</span>
+        </div>
+      </div>
+      <div class="sk-card fade-up d4">
+        <div class="sk-head"><div class="sk-ico i-amber">💻</div><div class="sk-name">Development & AI</div></div>
+        <div class="sk-tags">
+          <span class="sk-tag">Python (Automation)</span><span class="sk-tag">C Programming</span>
+          <span class="sk-tag">AI-Assisted Dev</span><span class="sk-tag">ML Fundamentals</span>
+        </div>
+      </div>
+      <div class="sk-card sk-full fade-up d5">
+        <div class="sk-head"><div class="sk-ico i-green">🛠️</div><div class="sk-name">Tools & Platforms</div></div>
+        <div class="sk-tags">
+          <span class="sk-tag">Shodan API</span><span class="sk-tag">Kali / Parrot Linux</span>
+          <span class="sk-tag">Maltego</span><span class="sk-tag">Recon-ng</span>
+          <span class="sk-tag">Burp Suite</span><span class="sk-tag">Wireshark</span>
+          <span class="sk-tag">Git / GitHub</span><span class="sk-tag">VS Code</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ EXPERIENCE ════ -->
+<section id="experience" class="section alt">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">04 —</span> Career</div>
+    <h2 class="heading fade-up">Professional <em>Experience</em></h2>
+
+    <div class="exp-item fade-up">
+      <div>
+        <div class="exp-when">Nov 2025 — Present</div>
+        <div class="exp-now-tag">● Current</div>
+      </div>
+      <div>
+        <div class="exp-org">Secure With Techies</div>
+        <div class="exp-title">OSINT Track Lead <small>(Part-Time)</small></div>
+        <ul class="exp-points">
+          <li>Designing industry-level OSINT challenges and training modules for cybersecurity skill optimization in students.</li>
+          <li>Leading live investigative sessions and mentoring aspiring analysts through real-world scenarios.</li>
+          <li>Collaborating with leadership to build structured OSINT learning paths and expand the investigative department.</li>
+          <li>Updating training material to reflect the latest developments in digital privacy and breach methodologies.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div>
+        <div class="exp-when">Freelance<br>Ongoing</div>
+      </div>
+      <div>
+        <div class="exp-org">Freelance</div>
+        <div class="exp-title">Website Developer</div>
+        <ul class="exp-points">
+          <li>Built business & corporate websites for clients — services, about, and contact pages that represent brands professionally online.</li>
+          <li>Designed high-converting landing pages optimized for lead generation, fast load speed, and mobile responsiveness.</li>
+          <li>Created food & restaurant websites with menus, galleries, and inquiry forms to attract and convert customers.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-up">
+      <div>
+        <div class="exp-when">Ongoing</div>
+      </div>
+      <div>
+        <div class="exp-org">Village Development Force (NGO)</div>
+        <div class="exp-title">Social Media Incharge & Digital Activist</div>
+        <ul class="exp-points">
+          <li>Orchestrating social media outreach and digital presence for rural development initiatives through storytelling.</li>
+          <li>Organizing digital literacy campaigns to bridge the digital divide and promote safe online practices.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ PROJECTS ════ -->
+<section id="projects" class="section">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">05 —</span> Work</div>
+    <h2 class="heading fade-up">Selected <em>Projects</em></h2>
+
+    <div class="filter-row fade-up">
+      <button class="f-btn active" onclick="switchTab('all',this)">All Projects</button>
+      <button class="f-btn" onclick="switchTab('sec',this)">Security & OSINT</button>
+      <button class="f-btn" onclick="switchTab('web',this)">Web Development</button>
+    </div>
+
+    <!-- ALL -->
+    <div class="proj-grid" id="tab-all">
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🔍 Security</span><div class="p-num">Project — 01</div><div class="p-name">Advanced OSINT Toolkit</div><div class="p-stack">Python · API Integration</div><p class="p-desc">Terminal-based suite integrating multiple OSINT modules for rapid digital footprint analysis. Modular architecture for seamless addition of new investigative techniques.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🛡️ Security</span><div class="p-num">Project — 02</div><div class="p-name">Email Breach Analysis Engine</div><div class="p-stack">Python · Breach APIs</div><p class="p-desc">Verifies email exposure across public breach datasets with detailed risk context and mitigation advice. Categorizes exposure by severity and data type.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🛡️ Security</span><div class="p-num">Project — 03</div><div class="p-name">Network Intelligence Scanner</div><div class="p-stack">Shodan API · Python</div><p class="p-desc">Automates identification of misconfigured services, open ports, and vulnerable endpoints via Shodan for rapid security assessment.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-web"><span class="p-badge pb-web">🌐 Web</span><div class="p-num">Project — 04</div><div class="p-name">Business & Corporate Websites</div><div class="p-stack vs">HTML · CSS · JavaScript</div><p class="p-desc">Full corporate websites for businesses — services, about, contact sections built to represent brands professionally and generate trust online.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-web"><span class="p-badge pb-web">📄 Landing</span><div class="p-num">Project — 05</div><div class="p-name">High-Converting Landing Pages</div><div class="p-stack vs">HTML · CSS · JavaScript</div><p class="p-desc">Conversion-focused landing pages for local businesses — mobile-first design, fast load times, clear CTAs, and lead capture forms that convert visitors into customers.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-food"><span class="p-badge pb-food">🍽️ Food</span><div class="p-num">Project — 06</div><div class="p-name">Food & Restaurant Websites</div><div class="p-stack fs">HTML · CSS · JavaScript</div><p class="p-desc">Beautiful, appetizing websites for food businesses — menus, galleries, opening hours, and inquiry forms designed to attract and delight customers.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="proj-grid hidden" id="tab-sec">
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🔍 Security</span><div class="p-num">Project — 01</div><div class="p-name">Advanced OSINT Toolkit</div><div class="p-stack">Python · API Integration</div><p class="p-desc">Terminal-based suite integrating multiple OSINT modules for rapid digital footprint analysis and target investigation.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🛡️ Security</span><div class="p-num">Project — 02</div><div class="p-name">Email Breach Analysis Engine</div><div class="p-stack">Python · Breach APIs</div><p class="p-desc">Verifies email exposure across breach datasets with detailed risk context and mitigation advice categorized by severity.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-sec"><span class="p-badge pb-sec">🛡️ Security</span><div class="p-num">Project — 03</div><div class="p-name">Network Intelligence Scanner</div><div class="p-stack">Shodan API · Python</div><p class="p-desc">Automates identification of misconfigured services and vulnerable endpoints via Shodan for rapid security assessment.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+    </div>
+
+    <!-- WEB -->
+    <div class="proj-grid hidden" id="tab-web">
+      <div class="p-card pc-web"><span class="p-badge pb-web">🌐 Web</span><div class="p-num">Project — 01</div><div class="p-name">Business & Corporate Websites</div><div class="p-stack vs">HTML · CSS · JavaScript</div><p class="p-desc">Full corporate websites with services, about, and contact sections — representing brands professionally online.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-web"><span class="p-badge pb-web">📄 Landing</span><div class="p-num">Project — 02</div><div class="p-name">High-Converting Landing Pages</div><div class="p-stack vs">HTML · CSS · JavaScript</div><p class="p-desc">Conversion-focused landing pages — mobile-first, fast, with clear CTAs and lead capture forms that turn visitors into customers.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+      <div class="p-card pc-food"><span class="p-badge pb-food">🍽️ Food</span><div class="p-num">Project — 03</div><div class="p-name">Food & Restaurant Websites</div><div class="p-stack fs">HTML · CSS · JavaScript</div><p class="p-desc">Beautiful websites for food businesses — menus, galleries, opening hours, and inquiry forms to attract and convert customers.</p><a href="https://github.com/lordmanjuu" target="_blank" class="p-link">View on GitHub →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CTF ════ -->
+<section id="ctf" class="section alt">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">06 —</span> Competitions</div>
+    <h2 class="heading fade-up">CTF <em>Achievements</em></h2>
+    <div class="ctf-top fade-up">
+      <div>
+        <div class="ctf-lbl">🏆 Top Achievement</div>
+        <div class="ctf-title">OSINT Industries CTF Platform</div>
+        <p class="ctf-sub">OSINT Specialist Tier · 250 Points · Global Competition</p>
+      </div>
+      <div class="ctf-rank">#9<small>Global Rank</small></div>
+    </div>
+    <div class="ctf-cards">
+      <div class="ctf-card fade-up d1"><div class="ctf-icon">🌏</div><div><span class="ctf-res">Completed</span><div class="ctf-ev">China OSINT CTF</div><div class="ctf-org">International OSINT Challenge</div></div></div>
+      <div class="ctf-card fade-up d2"><div class="ctf-icon">🇬🇧</div><div><span class="ctf-res">Completed</span><div class="ctf-ev">Operation Gambler CTF</div><div class="ctf-org">UK OSINT Community</div></div></div>
+      <div class="ctf-card fade-up d3"><div class="ctf-icon">🚩</div><div><span class="ctf-res">Participant</span><div class="ctf-ev">Phantom Flags National CTF</div><div class="ctf-org">24-Hour National Challenge</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CERTS ════ -->
+<section id="certs" class="section">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">07 —</span> Credentials</div>
+    <h2 class="heading fade-up">Certifications & <em>Badges</em></h2>
+    <div class="certs-grid">
+      <div class="cert-card fade-up d1"><span class="cert-ico">🏅</span><div class="cert-name">OSINT Specialist (250 Points)</div><div class="cert-by">OSINT Industries</div><div class="cert-date">Feb 2026</div></div>
+      <div class="cert-card fade-up d2"><span class="cert-ico">📱</span><div class="cert-name">Social Media Intelligence (SOCMINT)</div><div class="cert-by">CyberSudo</div><div class="cert-date">Mar 2026</div></div>
+      <div class="cert-card fade-up d3"><span class="cert-ico">🔍</span><div class="cert-name">OSINT Fundamentals Workshop</div><div class="cert-by">CyberSisco</div><div class="cert-date">Feb 2026</div></div>
+      <div class="cert-card fade-up d4"><span class="cert-ico">🧬</span><div class="cert-name">Modern Forensic Science (DNA Genome)</div><div class="cert-by">CyberSisco & Forensico</div><div class="cert-date">Feb 2026</div></div>
+      <div class="cert-card fade-up d5"><span class="cert-ico">🤖</span><div class="cert-name">AI Fluency for Students</div><div class="cert-by">Anthropic</div><div class="cert-date">2025</div></div>
+      <div class="cert-card fade-up d6"><span class="cert-ico">💛</span><div class="cert-name">JavaScript Basics</div><div class="cert-by">Grasshopper by Google</div><div class="cert-date">2025</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CONTACT ════ -->
+<section id="contact" class="section alt">
+  <div class="wrap">
+    <div class="label fade-up"><span class="label-num">08 —</span> Connect</div>
+    <div class="contact-grid">
+      <div class="fade-up d1">
+        <h2 class="ct-title">Let's Work<br>Together</h2>
+        <p class="ct-desc">Need a professional website for your business? Looking for OSINT research or cybersecurity help? I'm open to freelance projects, full-time roles, and collaborations. I reply within 24 hours.</p>
+        <div class="ct-links">
+          <a href="mailto:thotimanjunath4513@gmail.com" class="ct-link">
+            <div class="ct-ico">📧</div>
+            <div><span class="ct-lk">Email</span><span class="ct-lv">thotimanjunath4513@gmail.com</span></div>
+          </a>
+          <a href="tel:+919573038451" class="ct-link">
+            <div class="ct-ico">📞</div>
+            <div><span class="ct-lk">Phone</span><span class="ct-lv">+91 95730 38451</span></div>
+          </a>
+          <a href="https://github.com/lordmanjuu" target="_blank" class="ct-link">
+            <div class="ct-ico">⌨️</div>
+            <div><span class="ct-lk">GitHub</span><span class="ct-lv">github.com/lordmanjuu</span></div>
+          </a>
+          <a href="https://linkedin.com/in/thotimanjunath" target="_blank" class="ct-link">
+            <div class="ct-ico">🔗</div>
+            <div><span class="ct-lk">LinkedIn</span><span class="ct-lv">Thoti Manjunath</span></div>
+          </a>
+        </div>
+      </div>
+      <div class="fade-up d2">
+        <div class="opps-card">
+          <div class="opps-title">What I'm Looking For</div>
+          <div class="opps-sub">Open to the following opportunities</div>
+          <ul class="opps-list">
+            <li><span>🌐</span> Business & Corporate Websites</li>
+            <li><span>🍽️</span> Food & Restaurant Websites</li>
+            <li><span>📄</span> Landing Pages for Businesses</li>
+            <li><span>🔍</span> OSINT Research & Investigations</li>
+            <li><span>🛡️</span> Cybersecurity Internship / Full-time</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="ft-copy">© 2026 <strong>Thoti Manjunath</strong> — OSINT · Cybersecurity · Web Development</div>
+  <div class="ft-links">
+    <a href="https://github.com/lordmanjuu" target="_blank">GitHub</a>
+    <a href="mailto:thotimanjunath4513@gmail.com">Email</a>
+    <a href="#hero">Top ↑</a>
+  </div>
+</footer>
+
+<script>
+// ── TYPED EFFECT ──
+const roles = [
+  'OSINT Track Lead',
+  'Cybersecurity Researcher',
+  'Website Developer',
+  'Threat Intelligence Analyst',
+  'Digital Forensics Specialist',
+  'CTF Competitor'
+];
+let ri = 0, ci = 0, erasing = false;
+const typed = document.getElementById('typed-text');
+function typeLoop() {
+  const word = roles[ri];
+  if (!erasing) {
+    typed.textContent = word.slice(0, ci + 1);
+    ci++;
+    if (ci === word.length) { erasing = true; setTimeout(typeLoop, 1800); return; }
+  } else {
+    typed.textContent = word.slice(0, ci - 1);
+    ci--;
+    if (ci === 0) { erasing = false; ri = (ri + 1) % roles.length; }
+  }
+  setTimeout(typeLoop, erasing ? 50 : 72);
+}
+typeLoop();
+
+// ── SCROLL REVEAL (reliable) ──
+function reveal() {
+  document.querySelectorAll('.fade-up:not(.show)').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 40) el.classList.add('show');
+  });
+}
+window.addEventListener('scroll', reveal, { passive: true });
+window.addEventListener('resize', reveal, { passive: true });
+// Run on load — also covers above-fold elements
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(reveal, 80);
+  setTimeout(() => {
+    document.querySelectorAll('.fade-up:not(.show)').forEach(el => el.classList.add('show'));
+  }, 900);
+});
+
+// ── NAV SHADOW ON SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('stuck', window.scrollY > 8);
+}, { passive: true });
+
+// ── ACTIVE NAV LINK ──
+const allSecs = document.querySelectorAll('section[id]');
+const allNavLinks = document.querySelectorAll('.n-menu a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  allSecs.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  allNavLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur));
+}, { passive: true });
+
+// ── PROJECT FILTER ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.proj-grid').forEach(g => g.classList.add('hidden'));
+  const target = document.getElementById('tab-' + id);
+  target.classList.remove('hidden');
+  target.querySelectorAll('.p-card').forEach((c, i) => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(16px)';
+    setTimeout(() => {
+      c.style.transition = 'opacity .45s ease, transform .45s ease';
+      c.style.transitionDelay = (i * 70) + 'ms';
+      c.style.opacity = '1';
+      c.style.transform = 'translateY(0)';
+    }, 20);
+  });
+}
+</script>
+</body>
+</html>
