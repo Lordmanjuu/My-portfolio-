@@ -209,3 +209,33 @@
 
 /* Keep the header sticky without turning the page shell into a scroll container. */
 .site-shell{overflow:clip}
+
+/* Contact CTA contrast and mobile-first polish */
+.contact-primary{color:#fff!important;background:linear-gradient(115deg,#245fc1,#087f8c)!important;border:1px solid rgba(255,255,255,.22)!important;box-shadow:0 9px 28px rgba(36,95,193,.24)!important;text-shadow:none!important;position:relative;isolation:isolate}
+.contact-primary svg{color:currentColor!important;stroke:currentColor!important;flex-shrink:0}
+.contact-primary span,.contact-primary b{color:#fff!important}
+.contact-primary:hover{filter:brightness(1.08);transform:translateY(-2px)}
+:root[data-theme="light"] .contact-primary{color:#fff!important;background:linear-gradient(115deg,#245fc1,#087f8c)!important}
+.contact-panel{isolation:isolate}
+.contact-content,.contact-details{min-width:0}
+.contact-actions .button{min-height:48px}
+.contact-details>a{min-width:0}
+.contact-details>a b{min-width:0}
+@media(max-width:700px){
+ .contact-panel{padding:clamp(22px,6vw,30px) clamp(16px,4.5vw,22px);gap:25px}
+ .contact-content h2{font-size:clamp(34px,9.2vw,44px);letter-spacing:-1.7px;overflow-wrap:normal}
+ .contact-content>p{font-size:13px;line-height:1.85}
+ .contact-actions{display:grid;grid-template-columns:1fr;gap:10px}
+ .contact-actions .button{width:100%;min-width:0;justify-content:center;white-space:normal;text-align:center;padding:14px 12px;font-size:12px}
+ .contact-details>a{grid-template-columns:20px minmax(46px,58px) minmax(0,1fr) 13px;gap:8px;padding:16px 0}
+ .contact-details>a span{font-size:8px}
+ .contact-details>a b{font-size:clamp(9px,2.8vw,11px);overflow-wrap:anywhere;line-height:1.5}
+}
+@media(prefers-reduced-motion:no-preference){
+ .contact-panel:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 20%,rgba(120,170,255,.065) 48%,transparent 72%);transform:translateX(-120%);animation:contact-sheen 9s ease-in-out infinite}
+ .contact-glow{animation:contact-breathe 8s ease-in-out infinite alternate}
+ .contact-details>a{transition:color .22s,transform .22s,border-color .22s}
+ .contact-details>a:hover{transform:translateX(3px)}
+ @keyframes contact-sheen{0%,55%{transform:translateX(-120%)}80%,100%{transform:translateX(120%)}}
+ @keyframes contact-breathe{from{opacity:.10;transform:translate3d(-3%,0,0)}to{opacity:.23;transform:translate3d(4%,8px,0)}}
+}
