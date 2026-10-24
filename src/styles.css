@@ -206,4 +206,6 @@
   .project-featured .project-visual{height:155px}
 }
 @media(prefers-reduced-motion:reduce){.theme-toggle,.project-card,.cap-card{transition:none}}
-\n/* Keep the header sticky without turning the page shell into a scroll container. */\n.site-shell{overflow:clip}\n
+
+/* Keep the header sticky without turning the page shell into a scroll container. */
+.site-shell{overflow:clip}
