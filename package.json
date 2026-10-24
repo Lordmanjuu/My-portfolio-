@@ -1,0 +1,22 @@
+{
+  "name": "thoti-manjunath-portfolio",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "border-beam": "latest",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "metal-fx": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
