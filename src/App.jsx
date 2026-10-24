@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { BorderBeam } from 'border-beam';
 import { MetalFx } from 'metal-fx';
@@ -6,7 +6,7 @@ import {
   ArrowDownRight, ArrowRight, ArrowUpRight, ShieldCheck, Search, Code2,
   Globe2, Terminal, Mail, Phone, Menu, X, ExternalLink,
   Award, BriefcaseBusiness, GraduationCap, Fingerprint, ScanSearch, Network,
-  HeartHandshake, Sparkles, CheckCircle2, FileText, ChevronRight
+  HeartHandshake, Sparkles, CheckCircle2, FileText, ChevronRight, Sun, Moon
 } from 'lucide-react';
 
 const projects = [
@@ -32,6 +32,19 @@ function Eyebrow({children}) { return <div className="eyebrow"><span className="
 function App() {
   const [filter, setFilter] = useState('All work');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('tm-portfolio-theme');
+      return saved === 'light' || saved === 'dark' ? saved : 'dark';
+    } catch { return 'dark'; }
+  });
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.setAttribute('content', theme === 'dark' ? '#080b11' : '#f5f7fb');
+    try { window.localStorage.setItem('tm-portfolio-theme', theme); } catch {}
+  }, [theme]);
   const filters = ['All work','OSINT & cybersecurity','Web development','Community technology'];
   const visibleProjects = projects.filter(p => filter === 'All work' || p.category === filter);
   const closeMenu = () => setMenuOpen(false);
@@ -40,11 +53,15 @@ function App() {
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <header className="topbar">
       <a className="brand" href="#home" onClick={closeMenu} aria-label="Thoti Manjunath home"><span className="brand-mark">TM<span>.</span></span><span className="brand-caption">INDEPENDENT DIGITAL PRACTICE</span></a>
-      <button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'nav-links nav-open' : 'nav-links'}>
         {[['About','#about'],['Expertise','#expertise'],['Selected work','#work'],['Experience','#experience']].map(([t,h])=><a key={t} href={h} onClick={closeMenu}>{t}</a>)}
         <a className="nav-contact" href="#contact" onClick={closeMenu}>Let's talk <ArrowUpRight size={14}/></a>
       </nav>
+      <button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} aria-pressed={theme === 'light'} title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}>
+        {theme === 'dark' ? <Sun size={16}/> : <Moon size={16}/>}
+        <span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span>
+      </button>
+      <button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X/> : <Menu/>}</button>
     </header>
 
     <main>
@@ -66,7 +83,7 @@ function App() {
           </div>
         </div>
         <motion.div className="hero-visual" initial={{opacity:0,scale:.96,y:18}} animate={{opacity:1,scale:1,y:0}} transition={{duration:.85,delay:.18}}>
-          <BorderBeam size="md" colorVariant="ocean" strength={0.7} theme="dark">
+          <BorderBeam size="md" colorVariant="ocean" strength={0.62} theme={theme}>
             <div className="intel-card">
               <div className="intel-top"><span className="terminal-dots"><i/><i/><i/></span><span className="intel-label">FIELD NOTES / 001</span><span className="intel-live"><span/> ACTIVE</span></div>
               <div className="intel-main">
@@ -120,7 +137,7 @@ function App() {
       </section>
 
       <section className="recognition section-wrap">
-        <div className="recognition-card"><BorderBeam size="md" colorVariant="colorful" strength={0.6} theme="dark"><div className="recognition-inner"><div className="recognition-icon"><Award size={25}/></div><div className="recognition-copy"><Eyebrow>RECOGNITION / 001</Eyebrow><h2>Global Rank <span>#9</span></h2><p>OSINT Industries CTF · OSINT Specialist tier · 250 points</p><span className="recognition-note">A milestone in my ongoing journey through open-source intelligence and investigative problem solving.</span></div><a className="recognition-link" href="https://osint.industries/" target="_blank" rel="noreferrer" aria-label="OSINT Industries"><ArrowUpRight size={22}/></a></div></BorderBeam></div>
+        <div className="recognition-card"><BorderBeam size="md" colorVariant="ocean" strength={0.48} theme={theme}><div className="recognition-inner"><div className="recognition-icon"><Award size={25}/></div><div className="recognition-copy"><Eyebrow>RECOGNITION / 001</Eyebrow><h2>Global Rank <span>#9</span></h2><p>OSINT Industries CTF · OSINT Specialist tier · 250 points</p><span className="recognition-note">A milestone in my ongoing journey through open-source intelligence and investigative problem solving.</span></div><a className="recognition-link" href="https://osint.industries/" target="_blank" rel="noreferrer" aria-label="OSINT Industries"><ArrowUpRight size={22}/></a></div></BorderBeam></div>
         <div className="recognition-side"><div className="side-stat"><span className="side-stat-number">01</span><span className="side-stat-label">Global top-10 CTF placement</span></div><div className="side-stat"><span className="side-stat-number">03</span><span className="side-stat-label">Connected practice areas</span></div><div className="side-stat"><span className="side-stat-number">∞</span><span className="side-stat-label">Curiosity to keep learning</span></div></div>
       </section>
 
@@ -129,7 +146,7 @@ function App() {
       </section>
 
       <section className="contact section-wrap" id="contact">
-        <div className="contact-panel"><div className="contact-glow"/><div className="contact-content"><Eyebrow>06 / GET IN TOUCH</Eyebrow><h2>Have a problem<br/>worth <span>solving?</span></h2><p>Whether it’s a website for your business, an OSINT collaboration or a cybersecurity opportunity — tell me what you’re working on.</p><div className="contact-actions"><MetalFx preset="chromatic" strength={0.75} theme="dark"><a className="button button-primary contact-primary" href="mailto:thotimanjunath4513@gmail.com">Email me <ArrowUpRight size={17}/></a></MetalFx><a className="button button-quiet" href="https://www.linkedin.com/in/t-manjunath-27b469381/" target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={16}/></a></div></div><div className="contact-details"><a href="mailto:thotimanjunath4513@gmail.com"><Mail size={17}/><span>EMAIL</span><b>thotimanjunath4513@gmail.com</b><ArrowUpRight size={15}/></a><a href="tel:+919573038451"><Phone size={17}/><span>PHONE</span><b>+91 95730 38451</b><ArrowUpRight size={15}/></a><a href="https://github.com/Lordmanjuu" target="_blank" rel="noreferrer"><Code2 size={17}/><span>GITHUB</span><b>Lordmanjuu</b><ArrowUpRight size={15}/></a><a href="https://www.linkedin.com/in/t-manjunath-27b469381/" target="_blank" rel="noreferrer"><ExternalLink size={17}/><span>LINKEDIN</span><b>Thoti Manjunath</b><ArrowUpRight size={15}/></a></div></div>
+        <div className="contact-panel"><div className="contact-glow"/><div className="contact-content"><Eyebrow>06 / GET IN TOUCH</Eyebrow><h2>Have a problem<br/>worth <span>solving?</span></h2><p>Whether it’s a website for your business, an OSINT collaboration or a cybersecurity opportunity — tell me what you’re working on.</p><div className="contact-actions"><MetalFx preset="silver" strength={0.62} theme={theme}><a className="button button-primary contact-primary" href="mailto:thotimanjunath4513@gmail.com">Email me <ArrowUpRight size={17}/></a></MetalFx><a className="button button-quiet" href="https://www.linkedin.com/in/t-manjunath-27b469381/" target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight size={16}/></a></div></div><div className="contact-details"><a href="mailto:thotimanjunath4513@gmail.com"><Mail size={17}/><span>EMAIL</span><b>thotimanjunath4513@gmail.com</b><ArrowUpRight size={15}/></a><a href="tel:+919573038451"><Phone size={17}/><span>PHONE</span><b>+91 95730 38451</b><ArrowUpRight size={15}/></a><a href="https://github.com/Lordmanjuu" target="_blank" rel="noreferrer"><Code2 size={17}/><span>GITHUB</span><b>Lordmanjuu</b><ArrowUpRight size={15}/></a><a href="https://www.linkedin.com/in/t-manjunath-27b469381/" target="_blank" rel="noreferrer"><ExternalLink size={17}/><span>LINKEDIN</span><b>Thoti Manjunath</b><ArrowUpRight size={15}/></a></div></div>
       </section>
     </main>
     <footer className="footer section-wrap"><a className="brand" href="#home"><span className="brand-mark">TM<span>.</span></span></a><p>Independent digital practice · Built with curiosity and intent.</p><div className="footer-right"><span>© {new Date().getFullYear()} THOTI MANJUNATH</span><a href="#home">BACK TO TOP ↑</a></div></footer>
